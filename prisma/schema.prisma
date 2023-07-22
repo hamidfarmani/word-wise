@@ -12,7 +12,8 @@ datasource db {
 
 model Word {
   id                        String   @id @default(uuid())
-  meaning                   String
+  word                      String
+  definition                String
   usageInSentence           String
   synonym                   String
   antonym                   String
