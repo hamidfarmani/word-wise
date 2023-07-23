@@ -7,6 +7,7 @@ import {
   Configuration,
   OpenAIApi,
 } from "openai";
+import { findWord, getWords, saveWord } from "@/app/wordService";
 
 type ResponseData = {
   text: string;
@@ -34,7 +35,7 @@ export async function GET(
 
 export async function POST(req: Request) {
   const body = await req.json();
-  const prompt = body.prompt;
+  const prompt = body.prompt.trim();
   if (!prompt) {
     return NextResponse.json(
       { text: "Missing prompt" },
@@ -53,17 +54,26 @@ export async function POST(req: Request) {
   ];
 
   console.log(messages);
-  const result = await openai.createChatCompletion({
-    model: "gpt-3.5-turbo",
-    messages: messages,
-    temperature: 0.1,
-  });
+  let word = await findWord(prompt);
+  if (!word) {
+    console.log("Word not found. Getting from OpenAI");
 
-  const response =
-    result.data.choices[0].message?.content || "Sorry, I don't know";
+    const result = await openai.createChatCompletion({
+      model: "gpt-3.5-turbo",
+      messages: messages,
+      temperature: 0.1,
+    });
+
+    const response =
+      result.data.choices[0].message?.content || "Sorry, I don't know";
+    word = await saveWord(JSON.parse(response));
+  }
+
+  //   const words = await getWords();
+  //   console.log(words);
 
   return NextResponse.json(
-    { text: response },
+    { text: word },
     {
       status: 200,
     }
