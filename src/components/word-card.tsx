@@ -13,22 +13,22 @@ const WordCard: React.FC<WordCardProps> = ({ word }) => {
         <p className="italic text-gray-300">{word.usageInSentence}</p>
       </div>
 
-      <div className="px-6 pt-4 pb-2">
-        {word.antonym && (
-          <span className="content-between px-3 py-1 text-sm  text-white mr-2 mb-2">
-            <div>Antonym</div>
-            <div> {word.antonym}</div>
-          </span>
-        )}
-        {word.synonym && (
-          <span className="content-between px-3 py-1 text-sm  text-white mr-2 mb-2">
-            <div>Synonym</div>
-            <div> {word.synonym}</div>
-          </span>
-        )}
-      </div>
+      {word.antonym && word.synonym && (
+        <div className="pt-4 pb-2">
+          <div className="flex justify-center items-center">
+            <div className="py-1 text-sm text-white mb-2 flex flex-col items-center mx-3">
+              <div className="mb-1 text-gray-800 font-bold">Antonym</div>
+              <div>{word.antonym}</div>
+            </div>
+            <div className=" py-1 text-sm text-white mb-2 flex flex-col items-center mx-3">
+              <div className="mb-1 text-gray-800 font-bold">Synonym</div>
+              <div>{word.synonym}</div>
+            </div>
+          </div>
+        </div>
+      )}
 
-      <div className="px-6 pt-4 pb-2">
+      <div className="px-6 pt-4 pb-2 flex justify-center items-center">
         {word.lowerLevelWordSuggestion && (
           <span className="inline-block bg-gray-100 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
             {word.lowerLevelWordSuggestion}

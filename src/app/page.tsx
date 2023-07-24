@@ -1,8 +1,8 @@
 import Search from "@/components/search";
 import WordCard from "@/components/word-card";
-import { getWords } from "./wordService";
-import { openai } from "./api/word/route";
 import Image from "next/image";
+import { openai } from "./api/word/route";
+import { getWords } from "./wordService";
 import wordwiseLogo from "./wordwise.png";
 
 export default async function Home() {

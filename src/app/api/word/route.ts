@@ -58,6 +58,8 @@ export async function POST(req: Request) {
 
     const response =
       result.data.choices[0].message?.content || "Sorry, I don't know";
+    console.log(`Response: ${response}`);
+
     word = await saveWord(JSON.parse(response));
   }
 
@@ -84,6 +86,6 @@ function getSystemPrompt() {
           "higherLevelWordSuggestion":
           "lowerLevelWordSuggestion":
         }
-        The suggestions are one word optional. If you don't have any suggestion, just leave it blank.
+        The suggestion for each same, higher and lower levels are one word. If you don't have any suggestion, just leave it blank.
         `;
 }
