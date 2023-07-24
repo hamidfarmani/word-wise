@@ -1,33 +1,20 @@
 import { NextResponse } from "next/server";
 
 import { findWord, saveWord } from "@/app/wordService";
-import { NextApiRequest, NextApiResponse } from "next";
 import {
   ChatCompletionRequestMessageRoleEnum,
   Configuration,
   OpenAIApi,
 } from "openai";
 
-type ResponseData = {
-  text: string;
-};
+let configuration: Configuration;
+export let openai: OpenAIApi;
 
-const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
-const openai = new OpenAIApi(configuration);
-
-export async function GET(
-  req: NextApiRequest,
-  res: NextApiResponse<ResponseData>
-) {
-  return NextResponse.json(
-    { error: "Method not allowed" },
-    {
-      status: 400,
-    }
-  );
+if (process.env.OPENAI_API_KEY) {
+  configuration = new Configuration({
+    apiKey: process.env.OPENAI_API_KEY,
+  });
+  openai = new OpenAIApi(configuration);
 }
 
 export async function POST(req: Request) {
@@ -55,6 +42,14 @@ export async function POST(req: Request) {
   if (!word) {
     console.log("Word not found. Getting from OpenAI");
 
+    if (!openai) {
+      return NextResponse.json(
+        { text: "No connection to OpenAi" },
+        {
+          status: 200,
+        }
+      );
+    }
     const result = await openai.createChatCompletion({
       model: "gpt-3.5-turbo",
       messages: messages,
@@ -89,5 +84,6 @@ function getSystemPrompt() {
           "higherLevelWordSuggestion":
           "lowerLevelWordSuggestion":
         }
+        The suggestions are one word optional. If you don't have any suggestion, just leave it blank.
         `;
 }

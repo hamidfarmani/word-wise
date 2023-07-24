@@ -15,7 +15,11 @@ export interface Word {
 }
 
 export async function getWords(): Promise<Word[]> {
-  const words = await prisma.word.findMany();
+  const words = await prisma.word.findMany({
+    orderBy: {
+      word: "asc",
+    },
+  });
   return words;
 }
 

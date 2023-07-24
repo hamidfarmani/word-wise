@@ -1,20 +1,15 @@
 "use client";
-import { prisma } from "@/db";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Word } from "@prisma/client";
 
 interface InputProps {
   onSend: (value: string) => void;
   disabled: boolean;
 }
 
-interface MesssageProps {
-  word: Word;
-  key: number;
-}
-
 export default function Search() {
-  const [messages, setMessages] = useState<MesssageProps[]>([]);
+  const router = useRouter();
+
   const [loading, setLoading] = useState(false);
 
   const callApi = async (input: string) => {
@@ -27,45 +22,17 @@ export default function Search() {
       },
       body: JSON.stringify({ prompt: input }),
     }).then((res) => res.json());
-
-    if (response.text) {
-      const botMessage: MesssageProps = {
-        word: response.text,
-        key: new Date().getTime(),
-      };
-      setMessages([...messages, botMessage]);
-    }
     setLoading(false);
-  };
 
-  console.log(messages);
+    router.refresh();
+  };
 
   return (
     <>
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl">WordWise</h1>
-      </div>
-      <div>
-        <ChatInput onSend={callApi} disabled={loading} />
-      </div>
-
-      {messages.map((message) => (
-        <ChatMessage key={message.key} word={message.word} />
-      ))}
+      <ChatInput onSend={callApi} disabled={loading} />
     </>
   );
 }
-
-const ChatMessage = ({ word }: MesssageProps) => {
-  return (
-    <div className="flex justify-start">
-      <p>{word.word}</p>
-      <p className="bg-slate-900 text-slate-100 p-2 rounded">
-        {word.definition}
-      </p>
-    </div>
-  );
-};
 
 const ChatInput = ({ onSend, disabled }: InputProps) => {
   const [input, setInput] = useState("");
@@ -81,17 +48,27 @@ const ChatInput = ({ onSend, disabled }: InputProps) => {
 
   return (
     <div className="flex justify-between items-center mb-4">
-      <input
-        type="text"
-        className="bg-slate-900 text-slate-100 p-2 rounded w-full"
-        placeholder="Add a new word"
-        value={input}
-        disabled={disabled}
-        onChange={(e) => setInput(e.target.value)}
-        onKeyDown={handleKeyDown}
-      />
-      {disabled && <p>disabled</p>}
-      {!disabled && <button onClick={sendInput}>Send</button>}
+      {disabled && <div className="text-gray-400">Loading...</div>}
+      {!disabled && (
+        <>
+          <input
+            type="text"
+            className="bg-slate-900 text-slate-100 p-2 rounded w-10/12"
+            placeholder="Add a new word"
+            value={input}
+            disabled={disabled}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={handleKeyDown}
+          />
+
+          <button
+            className="bg-transparent hover:bg-slate-600 text-white font-semibold hover:text-white py-2 px-4 border border-slate-500 hover:border-transparent rounded"
+            onClick={sendInput}
+          >
+            Send
+          </button>
+        </>
+      )}
     </div>
   );
 };
