@@ -2,13 +2,15 @@ import Search from "@/components/search";
 import WordCard from "@/components/word-card";
 import { getWords } from "./wordService";
 import { openai } from "./api/word/route";
+import Image from "next/image";
+import wordwiseLogo from "./wordwise.png";
 
 export default async function Home() {
   const words = await getWords();
   return (
     <>
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl">WordWise</h1>
+        <Image src={wordwiseLogo} width={200} height={50} alt="logo" />
       </div>
       {!openai && (
         <div
