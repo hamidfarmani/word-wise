@@ -1,13 +1,12 @@
 import { NextResponse } from "next/server";
 
-import { PrismaClient, Word } from "@prisma/client";
+import { findWord, saveWord } from "@/app/wordService";
 import { NextApiRequest, NextApiResponse } from "next";
 import {
   ChatCompletionRequestMessageRoleEnum,
   Configuration,
   OpenAIApi,
 } from "openai";
-import { findWord, getWords, saveWord } from "@/app/wordService";
 
 type ResponseData = {
   text: string;
@@ -18,8 +17,6 @@ const configuration = new Configuration({
 });
 
 const openai = new OpenAIApi(configuration);
-
-const prisma = new PrismaClient();
 
 export async function GET(
   req: NextApiRequest,
@@ -69,9 +66,6 @@ export async function POST(req: Request) {
     word = await saveWord(JSON.parse(response));
   }
 
-  //   const words = await getWords();
-  //   console.log(words);
-
   return NextResponse.json(
     { text: word },
     {
@@ -81,7 +75,8 @@ export async function POST(req: Request) {
 }
 
 function getSystemPrompt() {
-  return `You act as an english tutor and partner for me to improve my English. 
+  return `Act as an english tutor and partner for me to improve my English. 
+        Do not provide any other information or explanation before or after the JSON response.
         You will recieve a word and respond the following in a JSON format:
         {
           "word":
@@ -94,5 +89,5 @@ function getSystemPrompt() {
           "higherLevelWordSuggestion":
           "lowerLevelWordSuggestion":
         }
-        I don't need any other information or explanation before or after the JSON response.`;
+        `;
 }
