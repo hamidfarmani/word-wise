@@ -22,6 +22,7 @@ const WordCard: React.FC<WordCardProps> = ({ word }) => {
           <Link
             href={`https://youglish.com/pronounce/${word.word}/english?`}
             target="_blank"
+            prefetch={false}
           >
             <p className="underline">Watch and listen to a real example</p>
           </Link>

@@ -23,7 +23,6 @@ export default function Search() {
       body: JSON.stringify({ prompt: input }),
     }).then((res) => res.json());
     setLoading(false);
-    router.refresh();
 
     setResponseData(word.text);
     handleOpenModal();
@@ -46,6 +45,7 @@ export default function Search() {
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
+    router.refresh();
   };
 
   return (

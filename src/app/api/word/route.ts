@@ -44,7 +44,7 @@ export async function POST(req: Request) {
 
     if (!openai) {
       return NextResponse.json(
-        { text: "No connection to OpenAi" },
+        { text: { word: "No connection to OpenAi" } },
         {
           status: 200,
         }
