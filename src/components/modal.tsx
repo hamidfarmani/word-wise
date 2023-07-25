@@ -17,7 +17,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, word }) => {
             <WordCard word={word} />
             <button
               id="closeModal"
-              className="bg-transparent hover:bg-slate-600 text-white font-semibold hover:text-white py-2 px-4 border border-slate-500 hover:border-transparent rounded"
+              className="bg-transparent hover:bg-slate-600 text-white font-semibold hover:text-white py-2 px-4 border my-2 border-slate-500 hover:border-transparent rounded"
               onClick={onClose}
             >
               Close

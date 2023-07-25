@@ -55,8 +55,8 @@ export default function Search() {
         <>
           <input
             type="text"
-            className="bg-slate-900 text-slate-100 p-2 rounded w-10/12"
-            placeholder="Add a new word"
+            className="bg-slate-900 text-slate-100 p-3 rounded w-full mr-2"
+            placeholder="Enter a word"
             value={input}
             disabled={loading}
             onChange={(e) => setInput(e.target.value)}
@@ -71,10 +71,10 @@ export default function Search() {
           )}
 
           <button
-            className="bg-transparent hover:bg-slate-600 text-white font-semibold hover:text-white py-2 px-4 border border-slate-500 hover:border-transparent rounded"
+            className="bg-transparent hover:bg-slate-600 text-white font-semibold hover:text-white py-3 px-4 border border-slate-500 hover:border-transparent rounded"
             onClick={sendInput}
           >
-            Send
+            Search
           </button>
         </>
       )}
