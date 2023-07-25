@@ -1,36 +1,15 @@
+import { Logo } from "@/components/Logo";
+import Banner from "@/components/banner";
 import Search from "@/components/search";
-import WordCard from "@/components/word-card";
-import Image from "next/image";
-import { openai } from "./api/word/route";
-import { getWords } from "./wordService";
-import wordwiseLogo from "./wordwise.png";
+import WordList from "@/components/word-list";
 
-export default async function Home() {
-  const words = await getWords();
+export default function Home() {
   return (
     <>
-      <div className="flex justify-between items-center mb-4">
-        <Image src={wordwiseLogo} width={200} height={50} alt="logo" />
-      </div>
-      {!openai && (
-        <div
-          className="bg-orange-100 border-l-4 border-orange-500 text-orange-700 p-4 my-3"
-          role="alert"
-        >
-          <p className="font-bold">Informational message</p>
-          <p className="text-sm">
-            There is no connection to OpenAi at the moment
-          </p>
-        </div>
-      )}
+      <Logo />
+      <Banner />
       <Search />
-      <div className="grid grid-cols-4 gap-3">
-        {words.length > 0 ? (
-          words.map((word) => <WordCard key={word.id} word={word} />)
-        ) : (
-          <div className="col-span-3">No words found</div>
-        )}
-      </div>
+      <WordList />
     </>
   );
 }
