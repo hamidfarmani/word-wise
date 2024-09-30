@@ -1,4 +1,5 @@
-import { prisma } from "@/db";
+import connectDB from "@/db";
+import { Word } from "@/models/word";
 
 export interface Word {
   id: string;
@@ -14,29 +15,29 @@ export interface Word {
   createdAt: Date;
 }
 
-export async function getWords(): Promise<Word[]> {
-  const words = await prisma.word.findMany({
-    orderBy: {
-      word: "asc",
-    },
-  });
-  return words;
+export async function getWords(): Promise<Word[] | undefined> {
+  try {
+    await connectDB();
+    const words = await Word.find().sort({ word: "asc" });
+    return words;
+  } catch (error) {
+    console.error("Error getting users:", error);
+    return undefined;
+  }
 }
 
 export async function saveWord(word: Word) {
-  const savedWord = await prisma.word.create({
-    data: {
-      word: word.word,
-      definition: word.definition,
-      usageInSentence: word.usageInSentence,
-      synonym: word.synonym,
-      antonym: word.antonym,
-      level: word.level,
-      sameLevelWordSuggestion: word.sameLevelWordSuggestion,
-      higherLevelWordSuggestion: word.higherLevelWordSuggestion,
-      lowerLevelWordSuggestion: word.lowerLevelWordSuggestion,
-    },
-  });
+  await connectDB();
+
+  const existingWord = await Word.findOne({ word: word.word });
+  if (existingWord) {
+    console.error("Word already exists");
+    return;
+  }
+
+  const newWord = new Word(word);
+  const savedWord = await newWord.save();
+
   console.log(`Saved word: ${savedWord.word}`);
   return savedWord;
 }
@@ -44,15 +45,15 @@ export async function saveWord(word: Word) {
 export async function findWord(word: string) {
   console.log(`Finding word: ${word}`);
 
-  const existingWord: Word[] | null = await prisma.word.findMany({
-    where: {
-      word,
-    },
+  await connectDB();
+  const foundWord = await Word.findOne({
+    word: word,
   });
-
-  if (existingWord.length > 0) {
-    return existingWord[0];
+  if (foundWord) {
+    console.log(`Found word: ${foundWord.word}`);
+    return foundWord;
   }
+  console.log("Word not found");
 
   return null;
 }
